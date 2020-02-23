@@ -36,7 +36,7 @@ def dict_receive(script):
 
     for dct in script['users']:
         for key in dct:
-            name = dct['name']
+            name = dct['screen_name']
             loc = dct['location']
             user_info[name] = loc
     return user_info
