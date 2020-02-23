@@ -22,7 +22,7 @@ def irl_processes():
     if len(acct) < 1:
         return 'INVALID ACCOUNT'
     url = twurl.augment(twitter_url,
-                        {'screen_name': acct})
+                        {'screen_name': acct, 'count': '75'})
     connection = urllib.request.urlopen(url, context=ctx)
     data = connection.read().decode()
     return data
