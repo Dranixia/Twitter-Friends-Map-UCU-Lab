@@ -1,4 +1,8 @@
-import json
+"""
+Butynets' Danylo
+"""
+
+
 from opencage.geocoder import OpenCageGeocode
 import folium
 import urllib.request
@@ -9,17 +13,17 @@ import ssl
 import twurl
 
 
-def irl_processes():
+def url_processes():
     """
     (None) -> str
-    Ignore SSL certificate errors and return data from web page.
+    Ignore SSL certificate errors and return data from twitter page.
     """
     twitter_url = 'https://api.twitter.com/1.1/friends/list.json'
     ctx = ssl.create_default_context()
     ctx.check_hostname = False
     ctx.verify_mode = ssl.CERT_NONE
     acct = input('Enter Twitter Account:')
-    if len(acct) < 1:
+    if len(acct) < 1 or ' ' in acct:
         return 'INVALID ACCOUNT'
     url = twurl.augment(twitter_url,
                         {'screen_name': acct, 'count': '75'})
@@ -29,7 +33,10 @@ def irl_processes():
 
 
 def dict_receive(script):
-
+    """
+    (str) -> dict
+    Return the dict with friend users and their locations from json formatted string.
+    """
     script = json.loads(script)
 
     user_info = dict()
@@ -43,6 +50,10 @@ def dict_receive(script):
 
 
 def geo_loc(data):
+    """
+    (dict) -> dict
+    Return dict with users and their location coordinates using OpenCage.
+    """
     locs = dict()
 
     code = '03b39cb989ef458aa9ed842df41b6d40'
@@ -62,6 +73,9 @@ def geo_loc(data):
 
 
 def folium_map(info):
+    """
+    (dict) ->  None
+    """
     html_map = folium.Map(location=[0, 0],
                           zoom_start=4)
     user_layer = folium.FeatureGroup('locations')
@@ -76,8 +90,9 @@ def folium_map(info):
 
 
 def main():
-    folium_map(geo_loc(dict_receive(irl_processes())))
-
+    name = url_processes()
+    if name != 'INVALID ACCOUNT':
+        folium_map(geo_loc(dict_receive(name)))
 
 if __name__ == "__main__":
     main()
